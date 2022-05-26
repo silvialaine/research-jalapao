@@ -1,0 +1,1658 @@
+# SELECTION OF CURVES FOR EACH RESPONSE VARIABLE
+#Selection was made by seeing how the data behave, then I selected the regressions that best represent
+#linear, logarithmic and 2nd order polynomial
+#selected by lowest AIC
+#then extract P, F and r2 values
+
+##-----------------------------------------------------------------------------------------------------------------------------------
+##########para RICHNESS RAR 84, DIVERSITY, CANOPY COVERAGE, TREE HEIGHT, TREE BASAL AREA, DENSITY, BIOMASS
+##-----------------------------------------------------------------------------------------------------------------------------------
+
+attach(cronosec)
+library(visreg)
+library(MuMIn)
+
+###################### RICHNESS MODEL SELECTION ###########################
+
+x=cronosec$idade
+y=cronosec$riqueza_rar_84
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec)
+m6<- lm(y ~ log(x)+z1,data=cronosec)
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec)
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL#####
+#####Script Leticia Gomes####
+#library(MuMIn)
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+
+bestmodel2<-lm(y ~ x+I(x^2)+L,data=cronosec)##tem que testar sem as vari?veis n?o significativas 
+summary(bestmodel2)
+
+#anova(bestmodel)
+#visreg(bestmodel,pch=22,cex=2)
+
+##### MODEL SELECTION DEEP WATERTABLES AREAS #######
+attach(profundo)
+modeloprofundo<-lm(riqueza_rar_84 ~ idade + I(idade^2), data = profundo)
+summary(modeloprofundo)
+modeloprofundo2<-lm(riqueza_rar_84 ~ log(idade), data = profundo)
+summary(modeloprofundo2)
+modeloprodunfo3<-lm(riqueza_rar_84 ~ idade, data = profundo)
+summary(modeloprodunfo3)
+
+####END SMODEL SELECTION DEEP WATERTABLES AREAS #######
+
+##### MODEL SELECTION SHALLOW WATERTABLES AREAS #######
+attach(superficial)
+modelosuperficial<-lm(riqueza_rar_84 ~ idade + I(idade^2), data = superficial)###polinomio
+summary(modelosuperficial)
+modelosuperficial2<-lm(riqueza_rar_84 ~ log(idade), data = superficial)####logaritmico
+summary(modelosuperficial2)
+modelosuperficial3<-lm(riqueza_rar_84 ~ idade, data = superficial)##linear
+summary(modelosuperficial3)
+
+
+################################# END RICHNESS ############################################
+
+################################ DIVERSITY MODEL SELECTION ######################
+
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$shannon_SH
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec)
+m6<- lm(y ~ log(x)+z1,data=cronosec)
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec)
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL #####
+#####Script LetIcia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ log(x),data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+#visreg(bestmodel,pch=22,cex=2)
+summary(bestmodel)
+#anova(bestmodel)
+
+################################# END DIVERSITY ############################################
+
+
+################################ PIONER SPECIES MODEL SELECTION ######################
+
+attach(cronosec)
+x=cronosec$idade
+y=cronosec$sp_nao_pioneira
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec)
+m6<- lm(y ~ log(x)+z1,data=cronosec)
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+##### CHOOSING BEST MODEL #####
+#####Script Leticia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+summary(bestmodel)
+
+#anova(bestmodel)
+#visreg(bestmodel,pch=22,cex=2)
+
+
+bestmodel2<-lm(y ~ log(x)+z1)
+summary(bestmodel2)
+
+################################# END PIONER SPECIES ############################################
+
+################################ FOREST TYPICAL SPECIES MODEL SELECTION ############
+attach(cronosec)
+x=cronosec$idade
+y=cronosec$sp_mata
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+##### CHOOSING BEST MODEL #####
+#####Script LetIcia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail")
+bestmodel<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,]
+#visreg(bestmodel,pch=22,cex=2)
+
+bestmodel1<-lm(y ~ log(x)+L+z1,data=cronosec)
+summary(bestmodel1)
+
+bestmodel2<-lm(y ~ log(x)+L,data=cronosec)
+summary(bestmodel2)
+
+bestmodel3<-lm(y ~ log(x)+z1,data=cronosec)
+summary(bestmodel3)
+
+##### MODEL SELECTION DEEP WATERTABEL AREAS 
+attach(profundo)
+modeloprofundo<-lm(sp_mata ~ idade + I(idade^2), data = profundo)
+summary(modeloprofundo)
+modeloprofundo2<-lm(sp_mata ~ log(idade), data = profundo)
+summary(modeloprofundo2)
+modeloprodunfo3<-lm(sp_mata ~ idade, data = profundo)
+summary(modeloprodunfo3)
+
+#### END MODEL SELECTION DEEP WATERTABEL AREAS 
+
+##### MODEL SELECTION SHALLOW WATERTABEL AREAS 
+attach(superficial)
+modelosuperficial<-lm(riqueza_rar_84 ~ idade + I(idade^2), data = superficial)
+summary(modelosuperficial)
+modelosuperficial2<-lm(riqueza_rar_84 ~ log(idade), data = superficial)
+summary(modelosuperficial2)
+modelosuperficial3<-lm(riqueza_rar_84 ~ idade, data = superficial)
+summary(modelosuperficial3)
+
+
+
+#################################END FOREST TYPICAL SPECIES############################################
+
+
+
+
+################################ TREE HEIGHT MODEL SELECTION ###############
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$altura_dossel
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+##### CHOOSING BEST MODEL #####
+#####Script Leticia Gomes####
+#library(MuMIn)
+options(na.action = "na.fail")
+bestmodel<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] # 
+#visreg(bestmodel,pch=22,cex=2)
+
+bestmodel1<-lm(y ~ log(x)-1 + z2, data=cronosec)
+summary(bestmodel1)
+drop1(bestmodel1)
+
+#################################END TREE HEIGHT ############################################
+
+
+################################ CANOPY COVERAGE MODEL SELECTION ######
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$cobertura_dossel
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL #####
+#####Script Leticia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+#visreg(bestmodel,pch=22,cex=2)
+
+bestmodel1<-lm(y ~ log(x),data=cronosec)
+summary(bestmodel1)
+
+#################################END CANOPY COVERAGE ############################################
+
+
+################################ DENSITY MODEL SELECTION ###########
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$densidade_total_sem_b
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL#####
+#####Script Let?cia Gomes####
+#library(MuMIn) #instala esse pacote
+options(na.action = "na.fail") #comparar os resultados #esse ? s? um comando anterior da fun??o
+bestmodel<- lm(y ~ 0+x+I(x^2)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  # c?digo para correr a compara??o de modelos #ele vai comparar tudo com tudo
+D_AICc[1:10,] # visualizar as primeiras 10 linhas da tabela de compara??o de modelos
+#visreg(bestmodel,pch=22,cex=2)
+
+bestmodel1<-lm(y ~ x+I(x^2)-1+L,data=cronosec)
+summary(bestmodel1)
+
+########## BEST MODEL DEEP WATER TABLE AREAS 
+attach(profundo)
+x=profundo$idade
+y=profundo$densidade_total_sem_b
+L=profundo$lencol
+z1=profundo$scores_PC1
+z2=profundo$scores_PC2
+bestmodel2<-lm(y ~ 0+x+I(x^2), data = profundo)
+summary(bestmodel2)
+
+
+########## BEST MODEL SHALLOW WATER TABLE AREAS 
+attach(superficial)
+x=superficial$idade
+y=superficial$densidade_total_sem_b
+L=superficial$lencol
+z1=superficial$scores_PC1
+z2=superficial$scores_PC2
+bestmodel3<-lm(y ~ 0+x+I(x^2), data = superficial)
+summary(bestmodel3)
+
+
+
+################################ DENSITY MODEL SELECTION (subplot) ###########
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$P_densidade_p_2_9.9_ha
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL #####
+#####Script LetIcia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+#visreg(bestmodel,pch=22,cex=2)
+
+bestmodel1<-lm(y ~ x+I(x^2),data=cronosec)
+summary(bestmodel1)
+
+########################## DENSITY MODEL SELECTION (plot) ######
+
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$G_densidade_maior_10
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ x+I(x^2)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ x+I(x^2)+L+z1,data=cronosec)
+m19<- lm(y ~ x+I(x^2)+L+z2,data=cronosec)
+m20<- lm(y ~ x+I(x^2)+z1+z2,data=cronosec)
+m21<- lm(y ~ x+I(x^2)+L,data=cronosec)
+m22<- lm(y ~ x+I(x^2)+z1,data=cronosec)
+m23<- lm(y ~ x+I(x^2)+z2,data=cronosec) 
+m24<- lm(y ~ x+I(x^2),data=cronosec)
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16, m17, m18,m19,m20,m21,m22,m23,m24)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL #####
+#####Script Leticia Gomes####
+#library(MuMIn)
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+#visreg(bestmodel,pch=22,cex=2)
+
+bestmodel1<-lm(y ~ log(x)-1,data=cronosec)
+summary(bestmodel1)
+
+
+#################################END DENSITY ############################################
+
+
+################################ BASAL AREA MODEL SELECTION #############
+
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$`area _basal`
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ I(x^0.71)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ I(x^0.71)+L+z1,data=cronosec)
+m19<- lm(y ~ I(x^0.71)+L+z2,data=cronosec)
+m20<- lm(y ~ I(x^0.71)+z1+z2,data=cronosec)
+m21<- lm(y ~ I(x^0.71)+L,data=cronosec)
+m22<- lm(y ~ I(x^0.71)+z1,data=cronosec)
+m23<- lm(y ~ I(x^0.71)+z2,data=cronosec) 
+m24<- lm(y ~ I(x^0.71),data=cronosec)
+
+
+
+models <- list(m1,m2,m3,m4,m5,m6,m7,m8,m9,m10,m11,m12,m13,m14,m15,m16)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+
+#####CHOOSING BEST MODEL #####
+#####Script Leticia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ x+L+z1+z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc") 
+D_AICc[1:10,]
+#visreg(bestmodel,pch=22,cex=2)
+
+
+bestmodel2<-lm(y ~ x+z2,data=cronosec)
+summary(bestmodel2)
+
+bestmodel3<-lm(y ~ x,data=cronosec)### melhor modelo
+summary(bestmodel3)
+
+#################################END BASAL AREA ############################################
+
+
+################################ BIOMASS MODEL SELECTION ##########
+
+attach(cronosec)
+
+x=cronosec$idade
+y=cronosec$biomassa
+L=cronosec$lencol
+z1=cronosec$scores_PC1
+z2=cronosec$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+m1<- lm(y ~ log(x)+L+z1+z2,data=cronosec)
+m2<- lm(y ~ log(x)+L+z1,data=cronosec)
+m3<- lm(y ~ log(x)+L+z2,data=cronosec)
+m4<- lm(y ~ log(x)+z1+z2,data=cronosec)
+m5<- lm(y ~ log(x)+L,data=cronosec) 
+m6<- lm(y ~ log(x)+z1,data=cronosec) 
+m7<- lm(y ~ log(x)+z2,data=cronosec) 
+m8<-lm(y ~ log(x),data=cronosec) 
+
+m9<- lm(y ~ x+L+z1+z2,data=cronosec)
+m10<- lm(y ~ x+L+z1,data=cronosec)
+m11<- lm(y ~ x+L+z2,data=cronosec)
+m12<- lm(y ~ x+z1+z2,data=cronosec)
+m13<- lm(y ~ x+L,data=cronosec)
+m14<- lm(y ~ x+z1,data=cronosec)
+m15<- lm(y ~ x+z2,data=cronosec)
+m16<- lm(y ~ x,data=cronosec)
+
+m17<- lm(y ~ 0+I(x^1.0309)+L+z1+z2,data=cronosec)
+m18<- lm(y ~ 0+I(x^1.0309)+L+z1,data=cronosec)
+m19<- lm(y ~ 0+I(x^1.0309)+L+z2,data=cronosec)
+m20<- lm(y ~ 0+I(x^1.0309)+z1+z2,data=cronosec)
+m21<- lm(y ~ 0+I(x^1.0309)+L,data=cronosec)
+m22<- lm(y ~ 0+I(x^1.0309)+z1,data=cronosec)
+m23<- lm(y ~ 0+I(x^1.0309)+z2,data=cronosec) 
+m24<- lm(y ~ 0+I(x^1.0309),data=cronosec)
+
+
+
+models <- list(m9,m10,m11,m12,m13,m14,m15,m16)
+library(AICcmodavg); library(plyr); library(stringr)
+ldply(models, function(mod){ data.frame(AICc = AICc(mod), AIC = AIC(mod), model = deparse(formula(mod))) })
+
+summary(m19)
+
+#####CHOOSING BEST MODEL#####
+#####Script Leticia Gomes####
+#library(MuMIn) 
+options(na.action = "na.fail") 
+bestmodel<- lm(y ~ x + L + z1 + z2,data=cronosec)
+D_AICc=dredge(bestmodel, rank="AICc")  
+D_AICc[1:10,] 
+#visreg(bestmodel,pch=22,cex=2)
+
+summary(bestmodel)
+
+bestmodel1<-lm(y ~ x+z2,data=cronosec)
+summary(bestmodel1)
+
+bestmodel2<-lm(y ~ x-1,data=cronosec)
+summary(bestmodel2)
+
+
+########################################## DOING THE FIGURES ###########################################
+
+########################################## RICHNESS ##########
+
+attach(completa)
+attach(profundo)
+attach(superficial)
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=riqueza_rar_84, color=lencol,  fill=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Number of species") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+        scale_y_continuous(breaks = seq(0,25,5),limits=c(0,25))+
+        scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+
+    
+        geom_hline(yintercept = 17.78)+
+        geom_hline(yintercept = 13.92)+
+        geom_hline(yintercept = 10.07)+
+
+  stat_smooth(method = 'lm', formula = 'y ~ x+I(x^2)', color="black", data=profundo) +
+  stat_smooth(method = 'lm', formula = 'y ~ log(x)', color="black", data=superficial)+
+  annotate(geom="text", x=30, y=5,   label="r?= 0.45, F= 11.61,  y= 2.42ln(x)+5.61, p<0.001 super.", color="black")+
+  annotate(geom="text", x=30, y=3, label="r?= 0.62, F= 7.45, y= -0.01x?+0.57x+8.16, p<0.01 prof.", color="black")
+
+###Conferindo o summary e vizualizando a regress?o vari?vel por vari?vel
+a<- (lm (riqueza_rar_84~idade+I(idade^2),data=profundo))
+summary(a)
+
+b<- (lm (riqueza_rar_84~log(idade),data=superficial))
+summary(b)
+
+#c<- (lm (riqueza_rar_84~log(idade)+lencol,data=cronosec))
+#summary(c)
+#library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+#visreg(a)
+
+
+###grafico2 + scale_color_grey() ### se a revista pedir para fazer tudo preto no branco
+
+################################# END RICHNESS ########################## 
+
+################################ DIVERSITY ####################
+
+attach(completa)
+attach(profundo)
+attach(superficial)
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=shannon_SH, color=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Diversity (Shannon's H')") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  scale_y_continuous(breaks = seq(0,4,1),limits=c(0,4))+
+  scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+  
+  ##### scale_color_grey()
+  geom_hline(yintercept = 3.686)+
+  geom_hline(yintercept = 3.000)+
+  geom_hline(yintercept = 2.315)+
+  
+  stat_smooth(method = 'lm', formula = 'y ~ log(x)', color="black", data=cronosec) +
+  annotate(geom="text", x=30, y=1, label="r?= 0.38, F= 15.67, y= 0.39ln(x) + 1.88, p<0.001", color="black")
+
+###Conferindo o summary e vizualizando a regress?o vari?vel por vari?vel
+
+a<- (lm (shannon_SH~log(idade),data=cronosec))
+summary(a)
+library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+visreg(a)
+
+
+###grafico2 + scale_color_grey() ### se a revista pedir para fazer tudo preto no branco
+
+################################# END DIVERSITY #################
+
+################################ PIONER SPECIES ####################
+
+attach(completa)
+attach(cronosec)
+
+library(ggplot2)
+
+d=completa
+grafico=ggplot(completa, aes(x=idade, y=sp_nao_pioneira, color=lencol))+
+  geom_point(aes(),show.legend=F) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Non-pioneer species") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank()) + ylim(0,1.0) + xlim(0,70)
+  
+  grafico +
+  geom_hline(yintercept = 0.80)+
+  geom_hline(yintercept = 0.75)+
+  geom_hline(yintercept = 0.70)+
+  geom_point(aes(size=scores_PC1), show.legend=T, data = d, alpha=1) +    
+  stat_smooth(method= 'lm', formula = 'y ~log(x)+0', color="black",data = cronosec) +
+  annotate(geom="text", x= 40, y=0.10, label="R?= 0.77, F= 41.54, y= 0.15ln(x)+0.03, p< 0.0001", color="black")
+
+###Conferindo o summary e vizualizando a regress?o vari?vel por vari?vel
+  
+a<- (lm (sp_nao_pioneira~log(idade)+scores_PC1,data=cronosec))
+summary(a)
+  library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+  visreg(a)
+
+
+################################# END PIONER SPECIES ###### 
+
+  
+################################ FOREST TYPICAL SPECIES ####################
+  
+  attach(completa)
+  attach(cronosec)
+  attach(profundo)
+  attach(superficial)
+  
+  library(ggplot2)
+  
+  ggplot(completa, aes(x=idade, y=sp_mata, color=lencol,  fill=lencol))+
+    geom_point(size=4) +  
+    theme_classic() +
+    xlab("Fallow years") + ylab("Forest species") +
+    theme(axis.line = element_line(colour = "black"),
+          axis.text=element_text(size=15),
+          axis.title=element_text(size=15),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_blank())+
+    scale_y_continuous(breaks = seq(0,1.00,0.2),limits=c(0,1.00))+
+    scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+    
+    
+    geom_hline(yintercept = 0.94)+
+    geom_hline(yintercept = 0.87)+
+    geom_hline(yintercept = 0.81)+
+    
+    stat_smooth(method = 'lm', formula = 'y ~ x', color="black", data=profundo) +
+    stat_smooth(method = 'lm', formula = 'y ~ log(x)', color="black", data=superficial)+
+    annotate(geom="text", x=40, y=0.30,   label="r?= 0.80, F= 54.58,  y= 0.15ln(x)+0.34, p<0.0001 super.", color="black")+
+    annotate(geom="text", x=40, y=0.20, label="r?= 0.41, F= 7.08, y= 0.004x+0.59, p<0.01 prof.", color="black")
+  
+  a<-lm(sp_mata ~ log(idade), data = superficial)
+  summary(a)
+  
+  b<-lm(sp_mata ~ idade, data = profundo)
+  summary(b)
+  
+  
+
+a<- (lm (sp_mata~log(idade)+lencol,data=cronosec))
+summary(a)
+library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+visreg(a)
+
+
+################################# END FOREST TYPICAL SPECIES ########################## 
+
+################################ TREE HEIGHT ####################
+  
+ 
+  attach(completa)
+  attach(cronosec)
+ 
+  
+  library(ggplot2)
+  
+  
+  d=completa
+  grafico=ggplot(completa, aes(x=idade, y=altura_dossel, color=lencol))+
+    geom_point(aes(),show.legend=F) +  
+    theme_classic() +
+    xlab("Fallow years") + ylab("Canopy height (m)") +
+    theme(axis.line = element_line(colour = "black"),
+          axis.text=element_text(size=15),
+          axis.title=element_text(size=15),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_blank())+
+          scale_y_continuous(breaks = seq(0,30,5),limits=c(0,30))+
+          scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))
+  
+  grafico +
+    geom_hline(yintercept = 27.269)+
+    geom_hline(yintercept = 22.625)+
+    geom_hline(yintercept = 17.981)+
+    geom_point(aes(size=scores_PC2), show.legend=T, data = d, alpha=1) +    ###mudar o tipo da bolinha ? nesse alpha. ? so colocar "/" e algum n?mero que muda
+    stat_smooth(method= 'lm', formula = 'y ~ log(x)+0', color="black",data = cronosec) +
+    annotate(geom="text", x= 40, y=5, label="R?= 0.96, F= 38.7, y= 4.35ln(x)+PC2(1.56), p< 0.0001", color="black")
+  
+  
+e<- (lm (altura_dossel~log(idade)-1+scores_PC2,data=cronosec))
+summary(e)
+library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+visreg(e, ylim=c(0,30))
+abline(h=27.269, col="black",lty=2)
+abline(h=22.625, col="black",lty=2)
+abline(h=17.981, col="black",lty=2)
+
+
+################################# END TREE HEIGHT ########################## 
+
+
+################################ CANOPY COVERAGE ##########
+
+attach(completa)
+attach(cronosec)
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=cobertura_dossel, color=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Canopy cover (%)") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  scale_y_continuous(breaks = seq(0,120,20),limits=c(0,120))+
+  scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+  
+  ##### scale_color_grey()
+  geom_hline(yintercept = 93.10)+
+  geom_hline(yintercept = 90.63)+
+  geom_hline(yintercept = 88.15)+
+  
+  stat_smooth(method = 'lm', formula = 'y ~ log(x)', color="black", data=cronosec) +
+  annotate(geom="text", x=40, y=20, label="r?= 0.58, F= 36.15, y= 14.74ln(x)+34.52, p<0.0001", color="black")
+
+
+a<- (lm (cobertura_dossel~log(idade),data=cronosec))
+summary(a)
+library(visreg) 
+visreg(a)
+
+
+################################# END CANOPY COVERAGE #################
+
+################################ DENSITY ####################
+
+attach(completa)
+attach(cronosec)
+attach(profundo)
+attach(superficial)
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=densidade_total_sem_b_100, color=lencol,  fill=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Density x 10?/ha") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  scale_y_continuous(breaks = seq(0,100,20),limits=c(0,100))+
+  scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+  
+  
+  geom_hline(yintercept = 54.41)+
+  geom_hline(yintercept = 32.60)+
+  geom_hline(yintercept = 10.79)+
+  
+  stat_smooth(method = 'lm', formula = 'y ~ 0+x+I(x^2)', color="black", data=profundo) +
+  stat_smooth(method = 'lm', formula = 'y ~ 0+x+I(x^2)', color="black", data=superficial)+
+  annotate(geom="text", x=40, y=100,   label="r?= 0.83, F= 35.22,  y= -8.36x?+456.47x, p<0.0001 super.", color="black")+
+  annotate(geom="text", x=40, y=94, label="r?= 0.75, F= 14.63, y= -3.69x?+260.27x, p<0.001 prof.", color="black")
+
+a<-lm(densidade_total_sem_b ~ 0+idade+I(idade^2), data = profundo)
+summary(a)
+
+b<-lm(densidade_total_sem_b ~ 0+idade+I(idade^2), data = superficial)
+summary(b)
+
+
+library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+visreg(a)
+visreg(b)
+
+
+################## DENSITY (PLOT) ##########
+
+attach(completa)
+attach(cronosec)
+
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=G_densidade_maior_10, color=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Density") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  scale_y_continuous(breaks = seq(0,140,10),limits=c(0,140))+
+  scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+  
+  ##### scale_color_grey()
+  geom_hline(yintercept = 98.5)+
+  geom_hline(yintercept = 124.2)+
+  geom_hline(yintercept = 72.8)+
+  
+  stat_smooth(method = 'lm', formula = 'y ~ log(x)', color="black", data=cronosec) +
+  annotate(geom="text", x=30, y=1, label="r?= 0.81, y= 176ln(x), p<0.0001", color="black")
+
+################################# END DENSITY ########################## 
+
+
+################################ BASAL AREA ##########
+
+attach(completa)
+attach(cronosec)
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=`area _basal`, color=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Basal area (m?/ha)") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  scale_y_continuous(breaks = seq(0,60,10),limits=c(0,60))+
+  scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+  
+  ##### scale_color_grey()
+  geom_hline(yintercept = 43.43)+
+  geom_hline(yintercept = 38.65)+
+  geom_hline(yintercept = 33.87)+
+  
+  stat_smooth(method = 'lm', formula = 'y ~ x+0', color="black", data=cronosec) +
+  annotate(geom="text", x=40, y=1, label="r?= 0.61, F= 41.1, y= 0.49x+6.15, p<0.0001", color="black")
+
+
+a<- (lm (`area _basal`~ idade ,data=cronosec))
+summary(a)
+
+library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+visreg(a)
+
+
+###grafico2 + scale_color_grey() ### se a revista pedir para fazer tudo preto no branco
+
+################################# END BASAL AREA ########################## 
+
+################################ BIOMASS ##########
+
+attach(completa)
+attach(cronosec)
+
+library(ggplot2)
+
+ggplot(completa, aes(x=idade, y=biomassa, color=lencol))+
+  geom_point(size=4) +  
+  theme_classic() +
+  xlab("Fallow years") + ylab("Biomass (Mg/ha)") +
+  theme(axis.line = element_line(colour = "black"),
+        axis.text=element_text(size=15),
+        axis.title=element_text(size=15),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank())+
+  scale_y_continuous(breaks = seq(0,350,50),limits=c(0,350))+
+  scale_x_continuous(breaks = seq(0,70,10),limits=c(0,70))+
+  
+  ##### scale_color_grey()
+  geom_hline(yintercept = 329.21)+
+  geom_hline(yintercept = 286.02)+
+  geom_hline(yintercept = 242.83)+
+  
+  stat_smooth(method = 'lm', formula = 'y ~ x-1', color="black", data=cronosec) +
+  annotate(geom="text", x=40, y=1, label="r?= 0.83, F= 127.90, y= 3.35x, p<0.0001", color="black")
+
+a<- (lm (biomassa ~ idade+0,data=cronosec))
+summary(a)
+
+library(visreg) ####s? pra ver a regress?o, a rela??o das duas vari?veis
+visreg(a)
+
+
+################################# END BIOMASS ########################## 
+
+#############################################################################################################################################################
+
+############################################## Calculating elasticities/resilience ##################################
+
+attach(elasticidade_seca)
+
+x=elasticidade_seca$idade
+y=elasticidade_seca$riqueza_rar_84
+L=elasticidade_seca$lencol
+z1=elasticidade_seca$scores_PC1
+z2=elasticidade_seca$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+
+bestmodel<- lm(y ~ x+I(x^2),data=elasticidade_seca) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,yaxt="n", ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#abline(v=1.6, col="black",lty=2) # 50%
+abline(v=4.34, col="black",lty=2) # 75% aos 4 anos
+abline(v=12, col="black",lty=2)# 100% aos 12 anos + sobe par depois descer 
+abline(v=57.69, col="black",lty=2)# retorna aos 100% aos 58 anos  
+
+
+#locator()
+text(40,150,"N?mero de esp?cies seca",cex=1)
+text(0.8,150,"(a)",cex=1)
+
+
+
+#############################
+############################### RICHNES (LOG) SECOND CURVE SHALLOW WATERTABEL AREAS ###############################
+attach(elasticidade_umida)
+
+x=elasticidade_umida$idade
+y=elasticidade_umida$riqueza_rar_84
+L=elasticidade_umida$lencol
+z1=elasticidade_umida$scores_PC1
+z2=elasticidade_umida$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+
+bestmodel<- lm(y ~ log(x),data=elasticidade_umida) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,yaxt="n", ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+abline(v=1.75, col="black",lty=2) # 50% aos 2 anos
+abline(v=7.47, col="black",lty=2)# 75% aos 8 anos  
+abline(v=31.6, col="black",lty=2)# 100% aos 32 anos  
+
+
+
+text(50,150,"N?mero de esp?cies umida",cex=1)
+text(0.8,150,"(b)",cex=1)
+
+######################################### DIVERSITY ###################################### 
+
+x=elasticidade$idade
+y=elasticidade$shannon_SH
+L=elasticidade$lencol
+z1=elasticidade$scores_PC1
+z2=elasticidade$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+
+bestmodel<- lm(y ~ log(x),data=elasticidade) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,yaxt="n", ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+#abline(v=2, col="black",lty=2) # 50%
+abline(v=2.80, col="black",lty=2) # 75% 3 anos
+abline(v=18.59, col="black",lty=2)# 100% 19 anos
+
+
+text(40,150,"Diversidade",cex=1)
+text(0.8,150,"(c)",cex=1)
+
+##################### PIONER SPECIES ###########
+
+x=elasticidade$idade
+y=elasticidade$sp_nao_pioneira
+L=elasticidade$lencol
+z1=elasticidade$scores_PC1
+z2=elasticidade$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ log(x)+0 + z1,data=elasticidade) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,yaxt="n", ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+abline(v=11.14, col="black",lty=2) # 50% 12 anos
+abline(v=35.55, col="black",lty=2) # 75% 36 anos
+###abline(v=65, col="black",lty=2)# aos 65 anos apenas 87% recuperado
+
+text(50,150,"sp_nao_pioneira",cex=1)
+text(0.8,150,"(c)",cex=1)
+
+############################ END #################
+
+
+############### TYPICAL FOREST SPECIES DEEP WATER TABLE AREAS #########################
+
+x=elasticidade_seca$idade
+y=elasticidade_seca$sp_mata
+L=elasticidade_seca$lencol
+z1=elasticidade_seca$scores_PC1
+z2=elasticidade_seca$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ x,data=elasticidade_seca) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+#abline(v=2.09, col="black",lty=2) # 50%
+abline(v=18.63, col="black",lty=2) # 75% com 19 anos
+#abline(v=64.8, col="black",lty=2)# aos 65 anos 94% recuperado
+
+text(40,150,"sp_mata seca",cex=1)
+text(0.8,150,"(d)",cex=1)
+
+
+############### TYPICAL FOREST SPECIES SHALLOW WATER TABLE AREAS #########################
+
+x=elasticidade_umida$idade
+y=elasticidade_umida$sp_mata
+L=elasticidade_umida$lencol
+z1=elasticidade_umida$scores_PC1
+z2=elasticidade_umida$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ log(x),data=elasticidade_umida) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+abline(v=1.82, col="black",lty=2) # 50% 2 anos
+abline(v=8.17, col="black",lty=2) # 75% com 9 anos
+abline(v=35, col="black",lty=2)# 100% 35anos
+
+text(40,150,"sp_mata umida",cex=1)
+text(0.8,150,"(e)",cex=1)
+
+########### TREE HEIGHT #########################
+
+x=elasticidade$idade
+y=elasticidade$altura_dossel
+L=elasticidade$lencol
+z1=elasticidade$scores_PC1
+z2=elasticidade$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ log(x)+0+z2,data=elasticidade) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,yaxt="n", ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+abline(v=14.47, col="black",lty=2) # 50% 15 anos
+abline(v=51.66, col="black",lty=2) # 75% 52 anos 
+#abline(v=61.59, col="black",lty=2)# aos 65 anos recuperou 78%
+text(40,150,"Altura do dossel",cex=1)
+text(0.8,150,"(f)",cex=1)
+
+################## END ###########
+
+
+################ CANOPY COVERAGE #######
+
+x=elasticidade$idade
+y=elasticidade$cobertura_dossel
+L=elasticidade$lencol
+z1=elasticidade$scores_PC1
+z2=elasticidade$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ log(x),data=elasticidade) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+#locator()
+
+abline(v=2.22, col="black",lty=2) # 50% 2 - 3 anos
+abline(v=9.56, col="black",lty=2) # 75% 9 - 10 anos
+abline(v=42.50, col="black",lty=2)# 100% 42 - 43 anos
+
+text(40,150,"Cobertura do dossel",cex=1)
+text(0.8,150,"(g)",cex=1)
+
+
+################## END #################
+
+################# DENSITY DEEP WATERTABLE AREAS ####### 
+
+x=elasticidade_seca$idade
+y=elasticidade_seca$densidade_total_sem_b
+L=elasticidade_seca$lencol
+z1=elasticidade_seca$scores_PC1
+z2=elasticidade_seca$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ 0+x+I(x^2),data=elasticidade_seca)
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,300), xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,300,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+abline(v=6.84, col="black",lty=2) # 50% aos 7 anos 
+abline(v=11.16, col="black",lty=2) # 75% aos 11 anos 
+abline(v=16.5, col="black",lty=2)#  ULTRAPASSA 100 aos 17 anos 
+abline(v=54, col="black",lty=2)# retorna aos 54 anos a referencia 
+
+text(40,300,"Densidade arvores seca ",cex=1)
+text(0.8,300,"(h)",cex=1)
+
+#locator()
+
+####################### DENSITY SHALLOW WATERTABLE AREAS 
+attach(elasticidade_umida)
+x=elasticidade_umida$idade
+y=elasticidade_umida$densidade_total_sem_b
+L=elasticidade_umida$lencol
+z1=elasticidade_umida$scores_PC1
+z2=elasticidade_umida$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ 0+x+I(x^2),data=elasticidade_umida)
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,300), xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,300,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+abline(v=4, col="black",lty=2) # 50% aos 4 anos 
+abline(v=6, col="black",lty=2) # 75% aos 6 anos 
+abline(v=8.5, col="black",lty=2)#  ULTRAPASSA 100% aos 9 anos 
+abline(v=46, col="black",lty=2)# retorna aos 46 anos a referencia 
+
+text(40,300,"Densidade arvores umida",cex=1)
+text(0.8,300,"(i)",cex=1)
+
+#locator()
+
+########################## END #####################
+
+
+
+######################### BASAL AREA ##########
+attach(elasticidade)
+
+x=elasticidade$idade
+y=elasticidade$area_basal
+L=elasticidade$lencol
+z1=elasticidade$scores_PC1
+z2=elasticidade$scores_PC2
+library(visreg)
+library(MuMIn)
+
+
+bestmodel<- lm(y ~ x,data=elasticidade) 
+
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,150),Xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+
+abline(v=26.6, col="black",lty=2) # 50% 26 anos
+abline(v=46.63, col="black",lty=2) # 75% 46 anos
+abline(v=65, col="black",lty=2)# 100% 
+
+text(40,150,"?rea basal",cex=1)
+text(0.8,150,"(j)",cex=1)
+
+#locator()
+
+################## END #########
+
+
+################ BIOMASS ##################### 
+
+attach(elasticidade)
+
+x=elasticidade$idade
+y=elasticidade$biomassa
+L=elasticidade$lencol
+z1=elasticidade$scores_PC1
+z2=elasticidade$scores_PC2
+library(visreg)
+library(MuMIn)
+
+bestmodel<- lm(y ~ x+0,data=elasticidade) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+abline(h=100, col="black",lty=2)
+
+#locator()
+
+abline(v=43, col="black",lty=2) # 50%
+abline(v=65, col="black",lty=2) # 75%
+#abline(v=100, col="black",lty=2)# n?o atingiu 100% 
+
+text(40,150,"bIOMASSA",cex=1)
+text(0.8,150,"(l)",cex=1)
+
+################## END #########
+
+
+################ FLORISTIC COMPOSITION DEEP WATERTABLE AREAS ######
+
+attach(elasticidade_seca)
+x=elasticidade_seca$idade
+y=elasticidade_seca$NMDS_1
+L=elasticidade_seca$lencol
+z1=elasticidade_seca$scores_PC1
+z2=elasticidade_seca$scores_PC2
+library(visreg)
+library(MuMIn)
+
+bestmodel<- lm(y ~ x,data=elasticidade_seca) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+abline(v=23.5, col="black",lty=2) # 50% com 24 anos 
+abline(v=42.5, col="black",lty=2) # 75% 43 anos 
+abline(v=62.1, col="black",lty=2)# 100% aos 63 anos 
+
+text(40,150,"Composi??o floristica seca",cex=1)
+text(0.8,150,"(m)",cex=1)
+
+#locator()
+
+#############################
+
+################ FLORISTIC COMPOSITION SHALLOW WATERTABLE AREAS ######
+
+attach(elasticidade_umida)
+x=elasticidade_umida$idade
+y=elasticidade_umida$NMDS_1
+L=elasticidade_umida$lencol
+z1=elasticidade_umida$scores_PC1
+z2=elasticidade_umida$scores_PC2
+library(visreg)
+library(MuMIn)
+
+bestmodel<- lm(y ~ log(x)+0,data=elasticidade_umida) 
+#summary(bestmodel)
+#anova(bestmodel)
+visreg(bestmodel,yaxt="n",ylim=c(0,150),xlim=c(0,70),pch=19,cex=2)
+ay<-seq(0,150,25)
+axis(2,at=ay,las=1)
+
+abline(h=100, col="black",lty=2)
+abline(h=75, col="black",lty=2)
+abline(h=50, col="black",lty=2)
+
+abline(v=7.55, col="black",lty=2) # 50% com 8 anos 
+abline(v=20.95, col="black",lty=2) # 75% 21 anos 
+abline(v=49.91, col="black",lty=2)# 100% aos 50 anos 
+
+text(40,150,"Composi??o floristica umida",cex=1)
+text(0.8,150,"(n)",cex=1)
+
+#locator()
+
+############################# END #################################################################################
+
+###################################################################################################################
+###################################################################################################################
+
+
+
+
